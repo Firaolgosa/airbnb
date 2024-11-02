@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:airbnb/core/controllers/routes.dart';
+import 'package:get_storage/get_storage.dart';
+import 'core/controllers/injections.dart';
+import 'core/constants/air_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+  initializeDependencies();
   runApp(const MyApp());
 }
 
@@ -11,13 +17,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Airbnb Clone',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFF5A5F), 
-        ),
-        useMaterial3: true,
-      ),
+      title: 'Airbnb Eagle',
+      theme: AirTheme.lightTheme,
+      darkTheme: AirTheme.darkTheme,
+      themeMode: ThemeMode.light,
       routerConfig: router,
       debugShowCheckedModeBanner: false,
     );

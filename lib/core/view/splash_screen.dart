@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../services/notification_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  final NotificationService _notificationService = NotificationService();
 
   @override
   void initState() {
@@ -29,10 +31,17 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    _controller.forward().then((_) {
-      // Navigate to your home screen after animation
-      context.go('/home'); // Update this route according to your routing setup
-    });
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    await _controller.forward();
+    await _notificationService.initialize();
+    await _notificationService.requestPermission();
+    
+    if (mounted) {
+      context.go('/home');
+    }
   }
 
   @override
@@ -59,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: FaIcon(
               FontAwesomeIcons.airbnb,
               size: 150,
-              color: Color(0xFFFF5A5F), // Airbnb's brand color
+              color: const Color(0xFFFF5A5F),
             ),
           ),
         ),
