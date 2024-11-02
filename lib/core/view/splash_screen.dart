@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen>
     await _notificationService.requestPermission();
     
     if (mounted) {
-      context.go('/home');
+      context.go('/login');
     }
   }
 

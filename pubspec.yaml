@@ -42,11 +42,11 @@ dependencies:
   get_storage: ^2.1.1
   shared_preferences: ^2.3.2
   get_it: ^8.0.2
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  font_awesome_flutter: ^10.7.0  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
