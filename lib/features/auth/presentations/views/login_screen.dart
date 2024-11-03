@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/air_theme.dart';
 import '../widgets/social_login_button.dart';
 import '../widgets/custom_divider.dart';
@@ -14,7 +15,7 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.go('/home'),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,

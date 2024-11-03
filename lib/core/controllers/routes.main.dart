@@ -11,6 +11,9 @@ final router = GoRouter(
       path: '/login',
       builder: (context, state) => const LoginScreen(),
     ),
-    // Add other routes here
+    GoRoute(
+      path: '/home',
+      builder: (context, state) => const HomePage(),
+    ),
   ],
 );
