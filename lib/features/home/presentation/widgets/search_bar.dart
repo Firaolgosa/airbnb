@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({Key? key, required void Function() onTap}) : super(key: key);
+  final VoidCallback? onTap;
+  
+  const CustomSearchBar({
+    Key? key, 
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +28,8 @@ class CustomSearchBar extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(32),
-          onTap: () {
-            // Handle search tap
+          onTap: onTap ?? () {
+            // Default search behavior
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -4,7 +4,9 @@ import 'package:airbnb/features/home/presentation/widgets/search_bar.dart';
 import 'package:airbnb/features/home/presentation/widgets/category_list.dart';
 import 'package:airbnb/features/home/presentation/widgets/listing_card.dart';
 import 'package:airbnb/features/home/data/repositories/listing_repository.dart';
+import 'package:airbnb/core/constants/app_icons.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,103 +15,140 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final ListingRepository _listingRepository = ListingRepository();
-  
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 5,
+      vsync: this,
+      initialIndex: 0,
+    );
   }
 
-  void _handleSearch() {
-    debugPrint('Search tapped');
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
-  void _handleListingTap(String id) {
-    debugPrint('Listing tapped: $id');
-    // Add navigation or other handling here
+  void _handleNavigation(int index) {
+    if (index == 4) {
+      context.push('/profile');
+    } else {
+      setState(() {
+        _selectedIndex = index;
+        _tabController.animateTo(index);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            CustomSearchBar(
-              onTap: _handleSearch,
+            Container(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  const SizedBox(height: 8),
+                  const CustomSearchBar(),
+                  const SizedBox(height: 12),
+                  CategoryList(
+                    selectedIndex: _selectedIndex,
+                    onCategorySelected: _handleNavigation,
+                  ),
+                ],
+              ),
             ),
-            CategoryList(),
             Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await _listingRepository.getListings();
-                },
-                child: FutureBuilder<List<Listing>>(
-                  future: _listingRepository.getListings(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    }
-
-                    final listings = snapshot.data ?? [];
-                    
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: listings.length,
-                      itemBuilder: (context, index) {
-                        final listing = listings[index];
-                        return ListingCard(
-                          title: listing.title,
-                          host: listing.host,
-                          price: listing.price,
-                          isLive: listing.isLive,
-                          images: listing.images,
-                          onTap: () => _handleListingTap(listing.id),
+              child: TabBarView(
+                controller: _tabController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: List.generate(5, (index) {
+                  return FutureBuilder<List<Listing>>(
+                    future: _listingRepository.getListings(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            left: 16,
+                            right: 16,
+                            bottom: 80,
+                          ),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            final listing = snapshot.data![index];
+                            return ListingCard(
+                              title: listing.title,
+                              host: listing.host,
+                              price: listing.price,
+                              images: listing.images,
+                              isLive: listing.isLive,
+                            );
+                          },
                         );
-                      },
-                    );
-                  },
-                ),
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  );
+                }),
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Explore',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
-            label: 'Wishlists',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.face),
-            label: 'Trips',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message_outlined),
-            label: 'Messages',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
-          ),
-        ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _handleNavigation,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Theme.of(context).primaryColor,
+          unselectedItemColor: Colors.grey,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          elevation: 0,
+          backgroundColor: Colors.white,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(AppIcons.explore),
+              label: 'Explore',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(AppIcons.wishlist),
+              label: 'Wishlists',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(AppIcons.trips),
+              label: 'Trips',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(AppIcons.inbox),
+              label: 'Inbox',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(AppIcons.profile),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }
