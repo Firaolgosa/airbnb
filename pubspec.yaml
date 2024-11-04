@@ -52,7 +52,9 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/air.jpg"
+  image_path: "assets/icon/log.png"
+  adaptive_icon_background: "#FF5A5F"
+  adaptive_icon_foreground: "assets/icons/airbnb_icon_foreground.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
