@@ -6,8 +6,8 @@ import '../widgets/social_login_button.dart';
 import '../widgets/custom_divider.dart';
 import '../widgets/phone_input_section.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

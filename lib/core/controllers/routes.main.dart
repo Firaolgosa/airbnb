@@ -9,7 +9,11 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/login',
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/signup',
+      builder: (context, state) => const SignUpScreen(),
     ),
     GoRoute(
       path: '/home',
